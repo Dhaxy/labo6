@@ -1,20 +1,20 @@
 <template>
 	<div>
-		{{ lat }} | {{ long }}
+		{{ cityName }}, {{ stateName }}
 	</div>
 </template>
 
 <script>
 	import axios from 'axios';
-	import cors from 'cors';
-	import data from '../data/data';
 
 	export default {
 		name: 'HomeComponent',
 		data: function() {
 			return {
 				lat: localStorage.getItem('userLatitude'),
-				long: localStorage.getItem('userLongitude')
+				long: localStorage.getItem('userLongitude'),
+				cityName: '',
+				stateName: ''
 			}
 		},
 		methods: {
@@ -25,13 +25,12 @@
 								localStorage.setItem('userLongitude', position.coords.longitude);
 							},
 							function () {
-								alert('GeoLocation is not available for your browser.');
+								alert('GeoLocation is not available for your browser or was not accepted.');
 							});
 				}
 			},
 
 			getCity() {
-
 				axios.get('https://nominatim.openstreetmap.org/reverse?format=json&lat='+localStorage.getItem('userLatitude')+'&lon='+localStorage.getItem('userLongitude')+'',
 						{
 							headers: {
@@ -39,7 +38,8 @@
 							}
 						})
 						.then(response => {
-							console.log(response.data.address.city);
+							this.cityName = response.data.address.city;
+							this.stateName = response.data.address.state;
 						})
 			}
 		},
