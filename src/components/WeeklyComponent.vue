@@ -2,14 +2,14 @@
 	<div>
 		<ul class="week-list-style-class">
 			<li v-for="day in this.days" class="week-list-item-style-class">
-				<div>
+				<div class="day-item">
 					{{ day.day }}
 				</div>
-				<img :src="getIcon(day.icon)">
-				<div>
+				<img class="icon-item" :src="getIcon(day.icon)">
+				<div class="summary-item">
 					{{ day.summary }}
 				</div>
-				<div>
+				<div class="avg-temp-item">
 					{{ day.avgTemp }}
 				</div>
 			</li>
@@ -53,7 +53,7 @@
 								var day = this.fromUnixTimeToDay(element.time);
 								var icon = element.icon;
 								var summary = element.summary;
-								var avgTemp = this.getAvgTemperature(element.temperatureMax, element.temperatureMin);
+								var avgTemp = this.getAvgTemperature(element.temperatureMax, element.temperatureMin) + '°C';
 								this.days.push({'day' : day, 'icon' : icon, 'summary' : summary, 'avgTemp' : avgTemp});
 								i++;
 							})
@@ -67,12 +67,12 @@
 			},
 
 			getAvgTemperature(max, min) {
-				return Math.trunc(max / min);
+				return Math.trunc((max + min) / 2);
 			},
 
 			getIcon(filename) {
-				var images = require.context('../assets/', false, /\.png$/);
-				return images('./' + filename + ".png");
+				var images = require.context('../assets/', false, /\.svg$/);
+				return images('./' + filename + ".svg");
 			}
 		},
 		mounted() {
@@ -83,6 +83,8 @@
 </script>
 
 <style scoped>
+	@import url('https://fonts.googleapis.com/css?family=Slabo+27px');
+
 	.week-list-style-class {
 		list-style: none;
 		margin-left: 0;
@@ -90,11 +92,35 @@
 	}
 
 	.week-list-item-style-class {
-		display: flex;
+		display: inline-block;
 		width: 100vw;
 		border-bottom: black 1px solid;
-		border-top: black 1px solid;
-		margin-bottom: 50px;
+		padding: 10px 0px 10px 0px;
+		margin-bottom: 10px;
+	}
+
+	.day-item {
+		font-family: 'Slabo 27px', serif;
+		font-size: 30px;
+		font-weight: bold;
+		color: #42b983;
+	}
+
+	.icon-item {
+		max-width: 100px;
+	}
+
+	.summary-item {
+		font-family: 'Slabo 27px', serif;
+		font-size: 20px;
+		font-weight: bold;
+		margin-bottom: 10px;
+	}
+
+	.avg-temp-item {
+		font-family: 'Slabo 27px', serif;
+		font-size: 30px;
+		font-weight: bold;
 	}
 
 </style>
